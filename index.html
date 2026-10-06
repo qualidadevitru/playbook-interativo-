@@ -3,6 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script>
+/* Celular de verdade: força o modo mobile, mesmo se o navegador abrir em "versão para computador" */
+(function(){try{
+  var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+  var menor = Math.min(screen.width, screen.height);
+  if(coarse && menor <= 820){
+    var h = document.documentElement; h.classList.add('is-phone');
+    var z = window.innerWidth / screen.width;
+    if(z > 1.3){ h.classList.add('phone-wide'); h.style.setProperty('--pz', z.toFixed(3)); }
+  }
+}catch(e){}})();
+</script>
+
 <title>Playbook Interativo — Mockup</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -506,6 +519,23 @@
   .topbar-brand{ display:none; align-items:center; gap:6px; font-size:11px; font-weight:700; color:var(--navy-800); }
   .topbar-brand button{ color:var(--ink-soft); }
   .app.mobile .topbar-brand{ display:flex; }
+
+  /* ===== Celular de verdade ===== */
+  html.is-phone .view-toggle{ display:none; }
+  html.is-phone .app.mobile{ width:100%; box-shadow:none; }
+  html.is-phone body.mobile-frame .modal-overlay{ width:100%; }
+  html.phone-wide body{ zoom:var(--pz); }
+  html.phone-wide .app-wrap, html.phone-wide .app, html.phone-wide .app.mobile{ height:calc(100vh / var(--pz)); }
+  html.phone-wide .modal-panel, html.phone-wide body.mobile-frame .modal-panel{ max-height:calc(92vh / var(--pz)); }
+  html.phone-wide #lock-screen{ height:calc(100vh / var(--pz)); bottom:auto; }
+  html.is-phone #lock-screen{ grid-template-columns:1fr; grid-template-rows:auto 1fr; }
+  html.is-phone .lock-side{ padding:28px 24px; gap:24px; }
+  html.is-phone .lock-name{ font-size:40px; letter-spacing:-1px; }
+  html.is-phone .lock-bar{ margin-bottom:16px; }
+  html.is-phone .lock-tagline{ font-size:13.5px; margin-top:12px; }
+  html.is-phone .lock-foot{ display:none; }
+  html.is-phone .lock-main{ padding:32px 24px; align-items:flex-start; }
+  html.is-phone .lock-brands{ grid-template-columns:1fr 1fr; }
 </style>
 </head>
 <body>
@@ -2220,7 +2250,7 @@ function copyTechText(btn){
   const txt = `*${c.name}*\n${c.tipo} | ${MOD_LABEL[c.mod]} | ${c.dur}\n\n*Carga horária:* ${c.cargaHoraria}\n*Estágio:* ${c.estagio}\n*Habilitação em conselho:* ${c.conselho}\n*${c.mecLabel || 'Reconhecimento MEC'}:* ${c.reconhecimentoMecTexto || 'Curso reconhecido pelo MEC.'}`;
   navigator.clipboard?.writeText(txt).then(()=> flashSuccess(btn)).catch(()=> alert('Não foi possível copiar automaticamente neste ambiente de teste.'));
 }
-if(window.innerWidth < 760){ setFrame('mobile'); }
+if(window.innerWidth < 760 || document.documentElement.classList.contains('is-phone')){ setFrame('mobile'); }
 
 function openFicha(id){
   const c = COURSES.find(x=>x.id===id);
