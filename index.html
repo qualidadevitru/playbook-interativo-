@@ -3,12 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="playbook-versao" content="2026-10-06-mobile2">
 <script>
 /* Celular de verdade: força o modo mobile, mesmo se o navegador abrir em "versão para computador" */
 (function(){try{
   var coarse = window.matchMedia && matchMedia('(pointer:coarse)').matches;
+  var toque = (navigator.maxTouchPoints || 0) > 0;
+  var uaCel = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
   var menor = Math.min(screen.width, screen.height);
-  if(coarse && menor <= 820){
+  if((coarse || toque || uaCel) && menor <= 820){
     var h = document.documentElement; h.classList.add('is-phone');
     var z = window.innerWidth / screen.width;
     if(z > 1.3){ h.classList.add('phone-wide'); h.style.setProperty('--pz', z.toFixed(3)); }
